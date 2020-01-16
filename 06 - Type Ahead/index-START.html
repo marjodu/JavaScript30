@@ -16,31 +16,43 @@
   </form>
 <script>
     const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+
+    // Declare three variables, one which will contain the data returned from the endpoint in an array, one that will reference the input HTML element, and one that will reference the unordered list HTML element.
     const cities = [];
     const input = document.querySelector('.search');
     const suggestions = document.querySelector('.suggestions');
 
+    // Modern browser APIs provide us with an experimental fetch method that fetches resources (including across network) and returns a Promise containing the response in a Response object. We'll use this method to get our data from the provided endpoint, convert the response to JSON, and then push the items into our array.
     fetch(endpoint)
         .then(blob => blob.json())
         .then(data => cities.push(...data))
 
+    // Define a function that will be responsible for finding matches between the inputted text and the data received from the endpoint.This function will accept two parameters; the inputted text and the array containing the data from the endpoint.
     function findMatches(wordToMatch, cities) {
+        // In the body of the function, we'll filter through the array, using a new instance of a Regular Expression object. This object will accept the inputted text as the pattern to match, and will have flags set to find all matches (rather than stopping at the first match) and to ignore text casing (learn about the RegExp constructor here).
         let reg = new RegExp(wordToMatch, 'gi');
+        // Match the inputted text with the city or state properties of the objects contained within our array. This function will be utilized in the body of the event handler function.
         return cities.filter(place => {
             return place.city.match(reg) || place.state.match(reg);
         })
     }
 
+    // Define the function to be used as the event handler.
     function displayMatches() {
+        // In the body of this function, declare a variable and define it as the response from calling the function in Step 4, passing in the value of the function context (the inputted text) and the variable containing our endpoint data as arguments. This variable now contains an array of items from our dataset that match the inputted text.
         const matches = findMatches(this.value, cities);
+        // Declare another variable and define it as the result of mapping over the array referenced in the previously declared variable. In the body of the map method, we'll declare two new variables which will target the city and state properties of each object in the array we're mapping over and replace those properties with the necessary HTML to highlight them. Finally, we'll return a template string containing two list items; one will display the city and state using the variables we just defined, and the other will display the population. The result of this map method will be an array of template strings that we can join together to be one BIG template string.
         const html = matches.map(item => {
             const regex = new RegExp(this.value, 'gi');
             const cityName = item.city.replace(regex, `<span class="hl">${this.value}</span>`);
             const stateName = item.state.replace(regex, `<span class="hl">${this.value}</span>`);
             return `<li><span class="name">${cityName}, ${stateName}</span></li>`;
         }).join('');
+        // Target the inner HTML of the unordered list (using the variable defined in Step 1) and set it as the variable containing the big template string.
         suggestions.innerHTML = html;
     }
+
+    // Attach an event listener to the input HTML element which will listen for the 'keyup' event and call upon a function as the event handler that will be responsible for displaying the matched data.
     input.addEventListener('keyup', displayMatches);
 </script>
 </body>
