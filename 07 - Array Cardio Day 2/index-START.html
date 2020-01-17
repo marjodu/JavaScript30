@@ -23,18 +23,26 @@
       { text: 'Ramen is my fav food ever', id: 123523 },
       { text: 'Nice Nice Nice!', id: 542328 }
     ];
-
+    const year = new Date().getFullYear();
     // Some and Every Checks
     // Array.prototype.some() // is at least one person 19 or older?
+    const somePass =  people.some(guy => guy.year < (year - 19));
     // Array.prototype.every() // is everyone 19 or older?
+    const everyPass = people.every(guy => guy.year > (year - 19));
 
     // Array.prototype.find()
     // Find is like filter, but instead returns just the one you are looking for
     // find the comment with the ID of 823423
+    const getComment = comments.find(com => com.id == 823423);
+    console.log(getComment)
 
     // Array.prototype.findIndex()
     // Find the comment with this ID
     // delete the comment with the ID of 823423
+    const id = comments.findIndex(com => com.id == 823423);
+    console.log(id)
+    comments.splice(id, 1);
+    console.log(comments)
 
   </script>
 </body>

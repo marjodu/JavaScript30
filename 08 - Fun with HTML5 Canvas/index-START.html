@@ -7,6 +7,36 @@
 <body>
 <canvas id="draw" width="800" height="800"></canvas>
 <script>
+    const canvas = document.getElementById('draw');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    let ctx = canvas.getContext('2d');
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+
+    let previousLocation = {x : 0, y : 0};
+    let currentLocation = {x : 0, y : 0};
+
+    let hue = 0;
+    let lineWidth = 100;
+
+    function draw() {
+        ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+        ctx.beginPath().moveTo(previousLocation.x, previousLocation.y);
+        ctx.lineTo(currentLocation.x, currentLocation.y);
+        ctx.stroke();
+    }
+
+    function mouseCoordinates(e) {
+        [previousLocation.x, previousLocation.y] = [currentLocation.x, currentLocation.y];
+    }
+
+    canvas.addEventListener('mousemove', mouseCoordinates);
+    canvas.addEventListener('mousedown', draw);
+    canvas.removeEventListener('mouseup', draw);
+    canvas.removeEventListener('mouseout', draw);
+
 </script>
 
 <style>
